@@ -37,3 +37,11 @@ var GAME_DATA = {
     spawn: { angle0: 0.8, angleStep: 2.39996, rMin: 9, rSpan: 13, soloR: 11 }
   }
 };
+
+/* v101: the stage REGISTRY (space_separation_design_v1). GAME_DATA.stage
+   above stays the beach's own entry and the compat alias; stages grow
+   by appending entries here — a colour/time variant reuses a builder
+   with palette overrides, a new terrain adds one builder key. The
+   active stage is GAME_DATA.stages[GAME_DATA.activeStage || 0]. */
+GAME_DATA.stages = [ GAME_DATA.stage ];
+GAME_DATA.activeStage = 0;

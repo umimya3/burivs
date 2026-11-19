@@ -1,4 +1,4 @@
-<!-- 北陸戦士しろみぶり BEEF OR FISH / Ver 99 / v99 / 2026-11-10 -->
+<!-- 北陸戦士しろみぶり BEEF OR FISH / Ver 101 / キャラ選択再設計 / 2026-11-19 -->
 <!doctype html>
 <html lang="ja">
 <head>
@@ -350,15 +350,16 @@
   .title-menu-btn:hover{ background:rgba(60,110,190,.55); }
   .title-menu-btn.title-play{
     font-size:19px; padding:13px 34px; letter-spacing:.2em;
-    background:rgba(36,92,188,.8); border:2px solid #ffd94d;
-    box-shadow:0 0 16px rgba(255,217,77,.35);
+    background:rgba(36,92,188,.8);
   }
+  .title-menu-btn{ transition:transform .15s ease, box-shadow .15s ease, background .15s ease; }
   /* v88: gamepad menu focus — one unmistakable highlight on
      whichever control the pad cursor sits on, in every menu
      (title / pages / panel). The pause menu keeps its .sel. */
   .uinav-focus{
     outline:3px solid #ffd94d !important; outline-offset:2px;
     box-shadow:0 0 0 3px rgba(255,217,77,.4), 0 0 16px rgba(255,217,77,.55) !important;
+    transform:scale(1.07);
   }
   body.product-build #titleDebugBtn, body.product-build #titleVrmBtn{ display:none; }
   .mpage{ position:fixed; inset:0; z-index:47; display:flex; flex-direction:column; color:var(--ink); }
@@ -789,28 +790,47 @@
 }
 #demoBadge[hidden]{ display:none; }
 /* v94: character select page (one page, two doors: PLAY / DEMO) */
-#charSelect{ position:fixed; inset:0; z-index:48; display:flex; align-items:center; justify-content:flex-end;
-  background:linear-gradient(90deg, rgba(4,8,14,.10) 0%, rgba(4,8,14,.42) 40%, rgba(4,8,14,.94) 66%); padding:18px; box-sizing:border-box; }
+#charSelect{ position:fixed; inset:0; z-index:48; display:flex; align-items:stretch; justify-content:space-between;
+  gap:18px; background:transparent; padding:18px; box-sizing:border-box; }
 #charSelect[hidden]{ display:none; }
-.cs-box{ width:min(600px,96vw); max-height:92vh; overflow:auto; background:rgba(13,22,36,.97);
+.cs-totitle{ position:absolute; top:18px; left:50%; transform:translateX(-50%); z-index:3;
+  background:rgba(13,22,36,.92); color:#eaf2ff; border:1px solid #2b4767; border-radius:999px;
+  padding:9px 18px; font-size:14px; font-weight:700; cursor:pointer; }
+.cs-totitle.uinav-focus{ transform:translateX(-50%) scale(1.07); }
+.cs-roster{ width:308px; flex:none; overflow:auto; background:rgba(13,22,36,.97);
+  border:1px solid #2b4767; border-radius:16px; padding:18px; color:#eaf2ff; box-sizing:border-box;
+  box-shadow:0 18px 50px rgba(0,0,0,.35); }
+.cs-roster h2{ font-size:22px; letter-spacing:.08em; margin:0; }
+.cs-box{ width:330px; flex:none; max-height:100%; overflow:auto; background:rgba(13,22,36,.97);
   border:1px solid #2b4767; border-radius:16px; padding:20px 22px; color:#eaf2ff; box-sizing:border-box;
-  box-shadow:0 18px 50px rgba(0,0,0,.55); }
+  box-shadow:0 18px 50px rgba(0,0,0,.35); align-self:flex-start; }
 .cs-box h2{ font-size:24px; letter-spacing:.08em; margin:0; }
-.cs-sub{ color:#9db4d4; margin:4px 0 0; font-size:13px; }
-.cs-layout{ display:flex; gap:18px; margin-top:14px; }
+.cs-sub{ color:#9db4d4; margin:4px 0 12px; font-size:13px; }
+.cs-hint{ color:#9db4d4; font-size:12px; margin:12px 0 0; }
+#csConfirmModal{ position:absolute; inset:0; z-index:6; display:flex; align-items:center; justify-content:center;
+  background:rgba(10,16,26,.45); }
+#csConfirmModal[hidden]{ display:none; }
+.cs-modal-box{ background:rgba(13,22,36,.98); border:1px solid #2b4767; border-radius:16px;
+  padding:26px 30px; color:#eaf2ff; text-align:center; box-shadow:0 18px 50px rgba(0,0,0,.5); min-width:300px; }
+.cs-modal-text{ font-size:19px; font-weight:800; margin-bottom:18px; }
+.cs-modal-btns{ display:flex; gap:14px; justify-content:center; }
+.cs-modal-btns .cs-btn{ min-width:110px; }
+.cs-radar{ display:block; margin:6px auto 2px; }
+.cs-radar-nums{ display:flex; flex-wrap:wrap; gap:4px 12px; justify-content:center; font-size:12px; color:#9db4d4; margin-top:4px; }
 /* v99: the preview is a nameplate over the live stage (the pooled
    model herself stands at the left of the screen); the fallback
    variant is the only one that still wears a panel. */
-.cs-preview{ position:absolute; left:30px; bottom:30px; max-width:40vw; pointer-events:none;
-  display:flex; flex-direction:column; gap:4px; text-align:left; }
-.cs-preview.cs-pv-fallback{ background:rgba(10,18,32,.78); border:1px solid #2b4767; border-radius:12px; padding:14px 18px; }
+.cs-preview{ position:absolute; left:50%; transform:translateX(-50%); bottom:26px; max-width:60vw; pointer-events:none;
+  display:flex; flex-direction:column; gap:4px; text-align:center; align-items:center;
+  background:rgba(10,18,32,.78); border:1px solid #2b4767; border-radius:12px; padding:12px 22px; }
+.cs-preview.cs-pv-fallback{ background:rgba(10,18,32,.78); }
 .cs-big{ font-size:64px; font-weight:900; line-height:1; }
 .cs-pv-name{ font-size:34px; font-weight:900; letter-spacing:.04em; line-height:1.15;
   text-shadow:0 2px 14px rgba(0,0,0,.85), 0 0 26px rgba(0,0,0,.5); }
 .cs-pv-title{ font-size:14px; color:#d7e5fa; text-shadow:0 1px 8px rgba(0,0,0,.9); }
 .cs-pv-note{ font-size:11px; color:#9db4d4; text-shadow:0 1px 6px rgba(0,0,0,.9); }
 .cs-right{ flex:1; min-width:0; }
-.cs-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.cs-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
 .cs-card{ position:relative; background:#16263e; border:2px solid #2b4767; border-radius:12px; padding:12px 6px 10px;
   color:#eaf2ff; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:6px;
   transition:border-color .15s, box-shadow .15s, transform .15s; }
@@ -916,7 +936,7 @@ body.practice #gh-epanel, body.practice #gh-timerwrap{ display:none !important; 
   <div class="chip">
     <h1>Shiromi Buri VRM Viewer<span class="sub">v4.6 ・ VRM 1.0</span></h1>
     <div id="loadmsg">モデルを読み込んでいます…</div>
-    <div id="buildstamp">JSビルド 2026-11-07.99 v99</div>
+    <div id="buildstamp">JSビルド 2026-11-19.101 キャラ選択再設計</div>
   </div>
   <div class="chip" id="stats" hidden></div>
 </div>
@@ -1278,7 +1298,7 @@ body.practice #gh-epanel, body.practice #gh-timerwrap{ display:none !important; 
     </div>
     <p class="title-note" id="titleBest" style="margin-top:10px"></p>
   </div>
-  <div id="titleVersion" style="color:hsl(292.5, 85%, 68%)">Ver 99</div>
+  <div id="titleVersion" style="color:hsl(207.5, 85%, 68%)">Ver 101</div>
 </div>
 
 <div id="resultScreen" hidden>
@@ -1355,18 +1375,26 @@ body.practice #gh-epanel, body.practice #gh-timerwrap{ display:none !important; 
   </div>
 </div>
 <div id="charSelect" hidden>
-  <div class="cs-preview" id="charSelectPreview"></div>
-  <div class="cs-box">
+  <button type="button" class="cs-totitle" id="charSelectToTitle">← タイトルへ戻る</button>
+  <div class="cs-roster">
     <h2 id="charSelectHead">CHARACTER SELECT</h2>
     <p class="cs-sub" id="charSelectSub">使用するキャラを選んでください</p>
     <div class="cs-grid" id="charSelectGrid"></div>
-    <div class="cs-info" id="charSelectInfo"></div>
     <div class="cs-warn" id="charSelectWarn" hidden></div>
-    <div class="cs-actions">
-      <button type="button" class="cs-btn" id="charSelectConfirm">このキャラで決定</button>
-      <button type="button" class="cs-btn" id="charSelectBack">← もどる</button>
+  </div>
+  <div class="cs-preview" id="charSelectPreview"></div>
+  <div class="cs-box">
+    <div class="cs-info" id="charSelectInfo"></div>
+    <p class="cs-hint">選ぶだけで中央に3Dモデルが表示されます。Enter／パッドSTART／ダブルクリックで出撃確認が出ます。B／Esc／上のボタンでタイトルへ戻ります。使用不可のキャラは理由を確認できますが決定はできません。</p>
+  </div>
+  <div id="csConfirmModal" hidden>
+    <div class="cs-modal-box">
+      <div class="cs-modal-text" id="csConfirmText">出撃しますか？</div>
+      <div class="cs-modal-btns">
+        <button type="button" class="cs-btn" id="csConfirmYes">はい</button>
+        <button type="button" class="cs-btn" id="csConfirmNo">いいえ</button>
+      </div>
     </div>
-    <p class="cs-hint">クリック／矢印キーで選択すると、左に3Dプレビュー（実モデル＋待機モーション）が出ます。決定ボタン（Enter／パッドSTART）で決定、B／Escでタイトルへ戻ります。使用不可のキャラは理由を確認できますが決定はできません。</p>
   </div>
 </div>
 <div id="demoResetFade" aria-hidden="true"></div>
@@ -1604,7 +1632,7 @@ window.addEventListener('unhandledrejection', function(e){
    old folder) and the stale banner says so with the remedy, instead of
    the game silently behaving like an older version. Detection is
    best-effort: any failure (offline, odd host path) stays silent. */
-var BUILD_ID = '2026-11-06.8';
+var BUILD_ID = '2026-11-19.101';
 function checkStaleCopy(){
   if (typeof fetch !== 'function') return;
   function onText(t){
@@ -1751,9 +1779,12 @@ scene.add(shadowCatcher);
 var FIELD_R = GAME_DATA.stage.fieldR;
 var lockOccluders = [];   // trees & rocks: raycast targets for lock-on occlusion
 var stageTrees = [];      // v89: every pine (scatter + windbreak), for practice display control
+var stageFieldGroup = null;   /* v101: retained so spaces can switch stages */
+var stagePropsGroup = null;
 (function buildField(){
   var ST = GAME_DATA.stage;
   var group = new THREE.Group();
+  stageFieldGroup = group;
   var outer = new THREE.Mesh(
     new THREE.CircleGeometry(ST.seaRadius, 64),
     new THREE.MeshStandardMaterial({ color:ST.seaColor, roughness:1, metalness:0 })
@@ -1911,6 +1942,7 @@ var debrisGeo = new THREE.BoxGeometry(0.17, 0.17, 0.17);
 (function buildDestructibles(){
   var PR = GAME_DATA.props;
   var group = new THREE.Group();
+  stagePropsGroup = group;
   var seed = PR.seed;
   function rnd(){ seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }
   var crateGeo = new THREE.BoxGeometry(0.82, 0.82, 0.82);
@@ -2748,6 +2780,7 @@ var hitMarkStart = null, hitMarkDone = {};
 function updateAttackHits(){
   if (!motion || motionFading){ hitMarkStart = null; return; }
   if (hitMarkStart !== motion.seq){ hitMarkStart = motion.seq; hitMarkDone = {}; }
+  if (motion.tessan) return;   /* v100: the shoulder charge resolves its own contact hit in updateTessanTravel — the thrust's timed mark must not also land */
   var spec = charMeleeSpec(motion.name), isShot = false;
   if (!spec){ spec = charShotSpec(motion.name); isShot = !!spec; }
   if (!spec) return;
@@ -2977,6 +3010,11 @@ function notifyEmpty(kind){
    (damage / blast / trigger / throw / charge / magazine) live
    in MINE_DATA (data/units.js), with the other content tables. */
 var BAZ_SPEED = 7, BAZ_TURN = 26;    // shell speed / homing strength (仮)
+/* v100: 分身突撃 steering — the same bounded-homing family as
+   the shell above: velocity steering capped at the bazooka's
+   own rate, and an explicit travel cap (until v99 the rush
+   was bounded only by its 2.2s life, ~35m) */
+var CLONE_RUSH_TURN = 26, CLONE_RUSH_MAX_DIST = 20;
 console.info('[weapons] サブ射撃「鰤バズーカ」(威力3・爆風1.9m・CD3秒) と特殊射撃「鰤爆弾」(設置型地雷：威力60/80/120・タイマー起爆、チャージで メガマイン／ギガマイン に成長、v91)');
 
 var shakeAmp = 0;
@@ -3501,18 +3539,31 @@ function updateFX(dt){
          the embodied afterimage of 分身突撃 (cloneRush) */
       var cDead = false;
       if (p.kind === 'cloneRush'){
+        /* v100: bounded homing — velocity steering under
+           CLONE_RUSH_TURN (the bazooka scheme) plus a travel
+           cap. Until now the afterimage snapped its direction
+           straight onto the target every frame: an unbounded
+           tracker. Damage, speed and life are untouched. */
         if (p.target && lockAlive(p.target)){
           _pv.set(p.target.x - pos.x, (1.05 + p.target.airY) - pos.y, p.target.z - pos.z);
-          if (_pv.lengthSq() > 0.01) p.dir.copy(_pv.normalize());
+          if (_pv.lengthSq() > 0.01){
+            _pv.normalize().multiplyScalar(16);
+            _pv2.copy(_pv).sub(p.vel);
+            var cMaxDv = CLONE_RUSH_TURN * dt;
+            if (_pv2.length() > cMaxDv) _pv2.setLength(cMaxDv);
+            p.vel.add(_pv2);
+            if (p.vel.lengthSq() > 0.01) p.dir.copy(p.vel).normalize();
+          }
         }
-        pos.addScaledVector(p.dir, 16 * dt);
+        pos.addScaledVector(p.vel, dt);
+        p.traveled = (p.traveled || 0) + p.vel.length() * dt;
         if (p.target && lockAlive(p.target) &&
             pos.distanceTo(_pv.set(p.target.x, 1.05 + p.target.airY, p.target.z)) < 0.95){
           damageDummy(p.target, p.dmg, 0, false, 'clone-rush');
           spawnImpact(pos, 1.0, 0xffd94a);
           cDead = true;
         }
-        if (p.t > p.life) cDead = true;
+        if (p.t > p.life || p.traveled >= CLONE_RUSH_MAX_DIST) cDead = true;
       } else {
         pos.addScaledVector(p.vel, dt);
         if (p.kind === 'kushoWave'){
@@ -4867,6 +4918,18 @@ var motionSeq = 0;
 function startMotion(name){
   motion = { name: name, start: lastT, seq: ++motionSeq };
   motionFading = false;
+  /* v100: kusho's far thrust IS the 鉄山靠 — decided here,
+     once, at the start (the pose layer's old live-distance
+     knee/elbow split could flip mid-motion). A locked target
+     beyond TESSAN_DATA.minDist and one step of boost in the
+     tank turn this thrust into the homing shoulder charge;
+     without the boost it stays the plain pre-v100 thrust
+     (knee pose, advance track, timed mark). */
+  if (name === 'thrust' && isKusho() && lockTarget && lockAlive(lockTarget) &&
+      distToDummy(lockTarget) > TESSAN_DATA.minDist && spendBoost(TESSAN_DATA.boost)){
+    motion.tessan = true;
+    tessankoStartFx();
+  }
   syncMotionButtons();
   if (name === 'step' || name === 'airdash') playFileSfx('step');
   else if (name === 'roll') playFileSfx('rolling');
@@ -5978,6 +6041,14 @@ function damagePlayer(dmg, opt){
   opt = opt || {};
   if (missionState !== 'playing' || playerHp <= 0 || !model) return;
   if (playerInvulnT > 0) return;
+  /* v100: 鉄山靠 armour — while the shoulder charge is
+     travelling, a hit under the game's one armour line
+     (single hit < TESSAN_DATA.armorBreak = 30, and no launch)
+     still costs HP but cannot flinch, shove, turn or ground
+     her. 30+ (the boss's light beam is 35, the mouth beam
+     120) or any launch breaks through into the normal
+     reaction below. */
+  var tessanArmored = tessanArmorActive() && !opt.launch && dmg < TESSAN_DATA.armorBreak;
   dmg = Math.max(1, Math.round(dmg * diffCfg().eDmg));
   var hpBefore = playerHp;
   statHitsTaken++;
@@ -5989,7 +6060,7 @@ function damagePlayer(dmg, opt){
      so a hit in the middle of a crowd shoves her OUT of it, never
      across it into the next enemy's arms */
   var kb = guarded ? 0.9 : 2.3;
-  if (opt.from){
+  if (opt.from && !tessanArmored){
     var kx = model.position.x - opt.from.x, kz = model.position.z - opt.from.z;
     var kl = Math.hypot(kx, kz) || 1;
     kx /= kl; kz /= kl;
@@ -6030,7 +6101,7 @@ function damagePlayer(dmg, opt){
   } else {
     playerHp -= dmg;
     var wasFlying = flying;
-    flying = false; kHeld = null; mineHeld = null;
+    if (!tessanArmored){ flying = false; kHeld = null; mineHeld = null; }
     /* escape guarantee (anti-gank): the invulnerability now lasts
        well past the reaction — a plain hit buys 1.4s, and a down
        buys 3.4s, which covers the whole 2.3s down/get-up motion
@@ -6039,7 +6110,14 @@ function damagePlayer(dmg, opt){
        can also be cancelled into a step / air dash — see
        escapeWindow in tryStep) instead of eating the next hit
        the frame she stands */
-    if (opt.launch || wasFlying || model.position.y > 0.25){
+    if (tessanArmored){
+      /* she eats the hit and keeps charging: no reaction
+         motion, no knockback, no escape invulnerability —
+         armour is not invincibility, the next hit lands too */
+      if (!playFileSfx('hurt')) playHitSfx(true);
+      addShake(0.1);
+      flashDamage(false);
+    } else if (opt.launch || wasFlying || model.position.y > 0.25){
       vy = Math.min(vy, -0.5);
       startMotion('down');
       playerInvulnT = 3.4;
@@ -6047,10 +6125,12 @@ function damagePlayer(dmg, opt){
       startMotion('hit');
       playerInvulnT = 1.4;
     }
-    if (!playFileSfx('hurt')) playHitSfx(true);
-    addShake(0.24);
-    triggerHitStop(0.08);
-    flashDamage(false);
+    if (!tessanArmored){
+      if (!playFileSfx('hurt')) playHitSfx(true);
+      addShake(0.24);
+      triggerHitStop(0.08);
+      flashDamage(false);
+    }
   }
   /* taking damage also feeds the 覚醒 gauge, at about half the
      efficiency of dealing it (measured on HP actually lost, so a
@@ -6461,7 +6541,7 @@ var CHAR_DATA = (function(){
       description: '', theme_color: '#3fa7ff', order: idx + 1, released: false,
       model: null, icon: null, portrait: null, motion_set: 'buri_standard',
       voice_set: null, weapons_visible: true,
-      params: { power: 3, speed: 3, armor: 3, reach: 3 },
+      params: { power: 3, speed: 3, armor: 3, reach: 3, melee: 3, shooting: 3 },
       usable: false, problems: [], notes: [] };
     if (!raw || typeof raw !== 'object'){
       c.name = '（不正なデータ）';
@@ -6499,6 +6579,8 @@ var CHAR_DATA = (function(){
       c.params.speed = csNum(prm.speed, 3);
       c.params.armor = csNum(prm.armor, 3);
       c.params.reach = csNum(prm.reach, 3);
+      c.params.melee = csNum(prm.melee, c.params.power);
+      c.params.shooting = csNum(prm.shooting, c.params.reach);
     }
     if (!c.id) c.problems.push('id がありません');
     if (!c.name) c.problems.push('名前がありません');
@@ -6864,6 +6946,7 @@ function openCharSelect(mode){
 }
 function closeCharSelect(keepStage){
   if (!charSelectOpen) return;
+  closeCsConfirm();
   charSelectOpen = false;
   var el = document.getElementById('charSelect');
   if (el) el.hidden = true;
@@ -6892,9 +6975,186 @@ var csPreviewId = null;
 function csPreviewFrame(){
   if (!model) return;
   var mx = model.position.x, my = model.position.y, mz = model.position.z;
-  flyTo(new THREE.Vector3(mx + 0.55, my + 1.5, mz + 3.6), new THREE.Vector3(mx + 0.85, my + 0.95, mz));
+  flyTo(new THREE.Vector3(mx, my + 1.35, mz + 3.4), new THREE.Vector3(mx, my + 0.95, mz));
+}
+/* ================= v101: the showcase SPACE + sortie confirmation ====
+   Spaces are the frame a screen lives in; stages are where fights
+   happen (space_separation_design_v1). The character select lives
+   in the showcase space: a plain light void with its own floor
+   disc. The active stage group, the props, the enemies and the
+   HUD are all hidden, and the enemies / props / ammo are parked
+   and restored, so a random showcase technique can never damage
+   the game world or leak it into the select screen. Leaving the
+   space restores every saved flag and value exactly. */
+var showcaseOn = false, showcaseSaved = null, showcaseGroup = null;
+var showcaseTimer = 0, showcaseYaw = 0, showcaseHome = null;
+var SHOWCASE_MOVES = {
+  buri_standard: ['combo', 'spin', 'thrust', 'upper', 'shot1', 'burst', 'hammer'],
+  barehand_kusho: ['combo', 'spin', 'thrust', 'upper', 'shot1', 'hammer'],
+  superhuman: ['combo', 'spin', 'thrust', 'upper', 'shot1', 'bazooka', 'hammer']
+};
+function showcaseBuild(){
+  if (showcaseGroup) return;
+  showcaseGroup = new THREE.Group();
+  var disc = new THREE.Mesh(new THREE.CircleGeometry(3.4, 48),
+    new THREE.MeshStandardMaterial({ color: 0xe8edf2, roughness: 0.95, metalness: 0 }));
+  disc.rotation.x = -Math.PI / 2; disc.position.y = 0.005; disc.receiveShadow = true;
+  showcaseGroup.add(disc);
+  var ring = new THREE.Mesh(new THREE.RingGeometry(3.4, 3.52, 48),
+    new THREE.MeshBasicMaterial({ color: 0xb9c8d8 }));
+  ring.rotation.x = -Math.PI / 2; ring.position.y = 0.006;
+  showcaseGroup.add(ring);
+  showcaseGroup.visible = false;
+  scene.add(showcaseGroup);
+}
+function enterShowcaseSpace(){
+  if (showcaseOn || !charSelectOpen) return;
+  showcaseBuild();
+  var hudEl = document.getElementById('gameHud');
+  showcaseSaved = {
+    bg: scene.background, fog: scene.fog,
+    field: stageFieldGroup ? stageFieldGroup.visible : null,
+    props: stagePropsGroup ? stagePropsGroup.visible : null,
+    hud: hudEl ? hudEl.style.display : null,
+    home: model ? model.position.clone() : null,
+    ammo: {}, dummies: [], propsData: []
+  };
+  for (var ak in AMMO) showcaseSaved.ammo[ak] = { n: AMMO[ak].n, t: AMMO[ak].t };
+  dummies.forEach(function(d, i){
+    showcaseSaved.dummies.push({
+      x: d.x, z: d.z, hp: d.hp, down: d.down, downT: d.downT,
+      deathBoom: d.deathBoom, kx: d.kx, kz: d.kz, noAI: d.noAI,
+      aiState: d.aiState, atkWants: d.atkWants, flinch: d.flinch, flash: d.flash,
+      groupVisible: d.group ? d.group.visible : null,
+      barVisible: d.bar ? d.bar.visible : null,
+      groupPos: d.group ? d.group.position.clone() : null,
+      groupRot: d.group ? d.group.rotation.clone() : null
+    });
+    d.noAI = true; d.atkWants = false; d.kx = 0; d.kz = 0;
+    d.x = 140 + i * 12; d.z = 140;
+    if (d.group){ d.group.position.set(d.x, -12, d.z); d.group.visible = false; }
+    if (d.bar) d.bar.visible = false;
+  });
+  destructibles.forEach(function(o, i){
+    showcaseSaved.propsData.push({
+      x: o.x, z: o.z, hp: o.hp, alive: o.alive, respawnT: o.respawnT,
+      spawnT: o.spawnT, shake: o.shake, flash: o.flash,
+      meshVisible: o.mesh ? o.mesh.visible : null
+    });
+    o.x = 240 + i * 12; o.z = 240;
+  });
+  if (typeof lockRelease === 'function') lockRelease('showcase');
+  scene.background = new THREE.Color(0xf2f4f7);
+  scene.fog = new THREE.Fog(0xf2f4f7, 16, 38);
+  if (stageFieldGroup) stageFieldGroup.visible = false;
+  if (stagePropsGroup) stagePropsGroup.visible = false;
+  if (hudEl) hudEl.style.display = 'none';
+  if (model) showcaseGroup.position.set(model.position.x, 0, model.position.z);
+  showcaseHome = showcaseSaved.home;
+  showcaseGroup.visible = true;
+  showcaseOn = true;
+  showcaseTimer = 1.0;
+  showcaseYaw = charYaw;
+}
+function exitShowcaseSpace(){
+  if (!showcaseOn) return;
+  var sv = showcaseSaved;
+  if (sv){
+    scene.background = sv.bg; scene.fog = sv.fog;
+    if (stageFieldGroup && typeof sv.field === 'boolean') stageFieldGroup.visible = sv.field;
+    if (stagePropsGroup && typeof sv.props === 'boolean') stagePropsGroup.visible = sv.props;
+    var hudEl = document.getElementById('gameHud');
+    if (hudEl && sv.hud !== null) hudEl.style.display = sv.hud;
+    for (var ak in sv.ammo){ if (AMMO[ak]){ AMMO[ak].n = sv.ammo[ak].n; AMMO[ak].t = sv.ammo[ak].t; } }
+    if (typeof updateAmmoHud === 'function') updateAmmoHud();
+    dummies.forEach(function(d, i){
+      var sd = sv.dummies[i]; if (!sd) return;
+      d.x = sd.x; d.z = sd.z; d.hp = sd.hp; d.down = sd.down; d.downT = sd.downT;
+      d.deathBoom = sd.deathBoom; d.kx = sd.kx; d.kz = sd.kz; d.noAI = sd.noAI;
+      d.aiState = sd.aiState; d.atkWants = sd.atkWants; d.flinch = sd.flinch; d.flash = sd.flash;
+      if (d.group){
+        if (sd.groupPos) d.group.position.copy(sd.groupPos);
+        if (sd.groupRot) d.group.rotation.copy(sd.groupRot);
+        if (typeof sd.groupVisible === 'boolean') d.group.visible = sd.groupVisible;
+      }
+      if (d.bar && typeof sd.barVisible === 'boolean') d.bar.visible = sd.barVisible;
+    });
+    destructibles.forEach(function(o, i){
+      var so = sv.propsData[i]; if (!so) return;
+      o.x = so.x; o.z = so.z; o.hp = so.hp; o.alive = so.alive;
+      o.respawnT = so.respawnT; o.spawnT = so.spawnT; o.shake = so.shake; o.flash = so.flash;
+      if (o.mesh && typeof so.meshVisible === 'boolean') o.mesh.visible = so.meshVisible;
+    });
+    if (model && sv.home) model.position.set(sv.home.x, sv.home.y, sv.home.z);
+  }
+  if (showcaseGroup) showcaseGroup.visible = false;
+  showcaseOn = false; showcaseSaved = null; showcaseHome = null;
+  charYaw = 0; if (model) model.rotation.y = 0;
+  if (motion && !motionFading) stopMotion();
+}
+function showcaseTick(dt){
+  if (!showcaseOn || !model) return;
+  if (showcaseGroup) showcaseGroup.position.set(model.position.x, 0, model.position.z);
+  /* keep the parked world parked: the title revive branch in
+     updateDummiesFx can re-show a dummy behind our back */
+  dummies.forEach(function(d){ if (d.group) d.group.visible = false; if (d.bar) d.bar.visible = false; });
+  showcaseYaw += dt * 0.45;
+  charYaw = showcaseYaw;
+  model.rotation.y = showcaseYaw;
+  /* drift home between techniques (the fighter's combo steps in) */
+  if (showcaseHome && (!motion || motionFading || LOCO[motion.name])){
+    var dhx = showcaseHome.x - model.position.x, dhz = showcaseHome.z - model.position.z;
+    var dh = Math.hypot(dhx, dhz);
+    if (dh > 0.02){
+      var step = Math.min(dh, dt * 1.4);
+      model.position.x += dhx / dh * step;
+      model.position.z += dhz / dh * step;
+    }
+    model.position.y = showcaseHome.y;
+  }
+  showcaseTimer -= dt;
+  if (showcaseTimer <= 0){
+    showcaseTimer = 2.8 + Math.random() * 1.8;
+    if (!motion || motionFading || LOCO[motion.name]){
+      var c = CHAR_DATA.list[charSelectIdx];
+      var list = (c && SHOWCASE_MOVES[c.motion_set]) || SHOWCASE_MOVES.buri_standard;
+      try { startMotion(list[Math.floor(Math.random() * list.length)]); } catch(e){}
+    }
+  }
+}
+var csConfirmOpen = false, csConfirmChoice = 'yes';
+function syncCsConfirmFocus(){
+  var y = document.getElementById('csConfirmYes'), n = document.getElementById('csConfirmNo');
+  if (y) y.style.outline = csConfirmChoice === 'yes' ? '3px solid #ffd94d' : '';
+  if (n) n.style.outline = csConfirmChoice === 'no' ? '3px solid #ffd94d' : '';
+}
+function openCsConfirm(){
+  var c = CHAR_DATA.list[charSelectIdx];
+  if (!c) return;
+  if (!charPlayable(c)){
+    var rs = charUnusableReasons(c);
+    try { showGameToast(rs.length ? rs[0] : 'そのキャラは使えません', 1800); } catch(e){}
+    return;
+  }
+  var t = document.getElementById('csConfirmText');
+  if (t){
+    var verb = charSelectMode === 'vrm' ? 'を表示しますか？'
+      : charSelectMode === 'practice' ? 'でプラクティスを開始しますか？'
+      : charSelectMode === 'demo' ? 'でデモを開始しますか？' : 'で出撃しますか？';
+    t.textContent = '「' + (c.name || '') + '」' + verb;
+  }
+  csConfirmChoice = 'yes'; syncCsConfirmFocus();
+  var m = document.getElementById('csConfirmModal');
+  if (m) m.hidden = false;
+  csConfirmOpen = true;
+}
+function closeCsConfirm(){
+  var m = document.getElementById('csConfirmModal');
+  if (m) m.hidden = true;
+  csConfirmOpen = false;
 }
 function csStageRestore(){
+  exitShowcaseSpace();   /* v101: restore the world exactly as it was */
   csPreviewId = null;
   if (activeCharId && activeCharId !== 'buri' && typeof CHAR_POOL !== 'undefined' &&
       CHAR_POOL[activeCharId] && CHAR_POOL[activeCharId].status === 'ready'){
@@ -6935,6 +7195,7 @@ function csSyncPreview(){
       } else pv.innerHTML = '';
     }
   }
+  enterShowcaseSpace();   /* v101: the select lives in the showcase space */
 }
 function buildCharSelectCards(){
   var grid = document.getElementById('charSelectGrid');
@@ -6992,6 +7253,44 @@ function csBarHtml(label, v, color){
     '<span class="cs-track"><span class="cs-fill" style="display:block;width:' + (vv * 20) +
     '%;background:' + color + ';box-shadow:0 0 8px ' + color + '"></span></span><span>' + vv + '</span></div>';
 }
+function csRadarHtml(c){
+  var axes = [['火力', 'power'], ['速度', 'speed'], ['耐久', 'armor'],
+              ['射程', 'reach'], ['格闘', 'melee'], ['射撃', 'shooting']];
+  var cx = 100, cy = 100, R = 62, color = c.theme_color || '#3fa7ff';
+  function pt(i, frac){
+    var a = -Math.PI / 2 + i * Math.PI * 2 / axes.length;
+    return [cx + Math.cos(a) * R * frac, cy + Math.sin(a) * R * frac];
+  }
+  function ringPts(frac, vals){
+    var out = [];
+    for (var i = 0; i < axes.length; i++){
+      var f = vals ? Math.max(0, Math.min(5, vals[i] || 0)) / 5 : frac;
+      var p = pt(i, vals ? f : frac);
+      out.push(p[0].toFixed(1) + ',' + p[1].toFixed(1));
+    }
+    return out.join(' ');
+  }
+  var vals = [], grid = '', axis = '', dots = '', nums = '';
+  axes.forEach(function(ax, i){
+    var v = c.params ? c.params[ax[1]] : 0;
+    if (v == null) v = ax[1] === 'melee' ? c.params.power : ax[1] === 'shooting' ? c.params.reach : 3;
+    vals.push(v);
+    var p = pt(i, 1), lp = pt(i, 1.3), dp = pt(i, Math.max(0, Math.min(5, v || 0)) / 5);
+    axis += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) +
+      '" stroke="rgba(159,190,230,.35)" stroke-width="1"/>' +
+      '<text x="' + lp[0].toFixed(1) + '" y="' + lp[1].toFixed(1) + '" text-anchor="middle" dominant-baseline="middle" ' +
+      'fill="#cfe2ff" font-size="12" font-weight="700">' + ax[0] + '</text>';
+    dots += '<circle cx="' + dp[0].toFixed(1) + '" cy="' + dp[1].toFixed(1) + '" r="3" fill="' + color + '"/>';
+    nums += '<span>' + ax[0] + ' ' + v + '</span>';
+  });
+  [1 / 3, 2 / 3, 1].forEach(function(f){
+    grid += '<polygon points="' + ringPts(f, null) + '" fill="none" stroke="rgba(159,190,230,.28)" stroke-width="1"/>';
+  });
+  return '<svg class="cs-radar" width="200" height="200" viewBox="0 0 200 200" role="img" aria-label="性能レーダーチャート">' +
+    grid + axis +
+    '<polygon points="' + ringPts(1, vals) + '" fill="' + color + '" fill-opacity="0.32" stroke="' + color + '" stroke-width="2"/>' +
+    dots + '</svg><div class="cs-radar-nums">' + nums + '</div>';
+}
 function refreshCharSelect(){
   var c = CHAR_DATA.list[charSelectIdx];
   for (var i = 0; i < charSelectCardEls.length; i++)
@@ -7007,10 +7306,7 @@ function refreshCharSelect(){
     html += '<div style="margin-top:4px">タイプ：' + csEsc(c.type || '不明') +
       ' ／ 射程：' + csEsc(c.range_label || '不明') +
       (c.cost ? ' ／ コスト：' + c.cost : '') + '</div>';
-    html += csBarHtml('火力', c.params.power, c.theme_color);
-    html += csBarHtml('速度', c.params.speed, c.theme_color);
-    html += csBarHtml('耐久', c.params.armor, c.theme_color);
-    html += csBarHtml('射程', c.params.reach, c.theme_color);
+    html += csRadarHtml(c);
     if (c.description) html += '<div class="cs-desc">' + csEsc(c.description) + '</div>';
     var csRs = charUnusableReasons(c);
     if (csRs.length)
@@ -7033,7 +7329,7 @@ function selectCharCard(i, confirm){
   charSelectIdx = i;
   refreshCharSelect();
   var c = CHAR_DATA.list[i];
-  if (confirm && c && c.usable) confirmCharSelect();
+  if (confirm && c && c.usable) openCsConfirm();
 }
 function confirmCharSelect(){
   var c = CHAR_DATA.list[charSelectIdx];
@@ -7044,6 +7340,7 @@ function confirmCharSelect(){
     return;
   }
   selectedCharId = c.id;
+  exitShowcaseSpace();   /* v101: the start chain / viewer inherits a restored stage */
   var mode = charSelectMode;
   if (mode === 'vrm'){
     /* v99: the viewer door. No start authorization is minted —
@@ -7065,20 +7362,33 @@ function confirmCharSelect(){
   startWithSelectedModel(mode);   /* v95: swap the model in, then start */
 }
 (function(){
-  var cf = document.getElementById('charSelectConfirm');
-  if (cf) cf.addEventListener('click', function(){ ensureSfx(); confirmCharSelect(); });
-  var bk = document.getElementById('charSelectBack');
-  if (bk) bk.addEventListener('click', function(){ ensureSfx(); closeCharSelect(); });
+  var tt = document.getElementById('charSelectToTitle');
+  if (tt) tt.addEventListener('click', function(){ ensureSfx(); closeCharSelect(); });
+  var ys = document.getElementById('csConfirmYes');
+  if (ys) ys.addEventListener('click', function(){ ensureSfx(); closeCsConfirm(); confirmCharSelect(); });
+  var nn = document.getElementById('csConfirmNo');
+  if (nn) nn.addEventListener('click', function(){ ensureSfx(); closeCsConfirm(); });
 })();
 window.addEventListener('keydown', function(e){
   if (!charSelectOpen) return;
   var k = e.key || '';
   var n = CHAR_DATA.list.length;
+  if (csConfirmOpen){
+    if (k === 'Escape' || k === 'b' || k === 'B'){ e.preventDefault(); ensureSfx(); closeCsConfirm(); }
+    else if (k === 'ArrowLeft' || k === 'ArrowRight' || k === 'ArrowUp' || k === 'ArrowDown'){
+      e.preventDefault(); csConfirmChoice = csConfirmChoice === 'yes' ? 'no' : 'yes'; syncCsConfirmFocus();
+    }
+    else if (k === 'Enter' || k === ' ' || k === 'z' || k === 'Z'){
+      e.preventDefault(); ensureSfx();
+      if (csConfirmChoice === 'yes'){ closeCsConfirm(); confirmCharSelect(); } else closeCsConfirm();
+    }
+    return;
+  }
   if (k === 'Escape'){ e.preventDefault(); ensureSfx(); closeCharSelect(); return; }
   if (!n) return;
   if (k === 'ArrowRight' || k === 'ArrowDown'){ e.preventDefault(); selectCharCard((charSelectIdx + 1) % n, false); }
   else if (k === 'ArrowLeft' || k === 'ArrowUp'){ e.preventDefault(); selectCharCard((charSelectIdx - 1 + n) % n, false); }
-  else if (k === 'Enter' || k === ' ' || k === 'z' || k === 'Z'){ e.preventDefault(); ensureSfx(); confirmCharSelect(); }
+  else if (k === 'Enter' || k === ' ' || k === 'z' || k === 'Z'){ e.preventDefault(); ensureSfx(); openCsConfirm(); }
 });
 
 /* ================= v94: store-demo position reset =================
@@ -10137,6 +10447,149 @@ var CHAR_SHOT_OVR = {
    the pre-v98 specs. ---- */
 var CHAR_MELEE_REACH_MUL = { barehand_kusho: 1.35 };
 var CHAR_COMBO_STEP = { barehand_kusho: [0.30, 0.35, 0.45, 0.55, 0.70] };   /* per combo mark: once the chain connects it steps deeper and deeper (a whiffed opener steps only its first 0.30 — see updateAttackHits) */
+/* ---- v100: 鉄山靠 (tessanko) — kusho's far thrust, rebuilt as
+   a homing, armoured shoulder charge. ALL of its numbers live
+   here, as data, next to the v98 reach tables. Provisional
+   values, chosen against the game's existing yardsticks:
+   - minDist 3.2: the far branch's own pre-v100 threshold.
+   - speed 13: the thrust advance track covers 8.0m in 0.68s
+     (~11.7 m/s average, front-loaded); a flat 13 sits in that
+     family and reaches the cap in ~0.77s, inside the thrust
+     motion's 1.3s, so a whiff's recovery is the slot's own.
+   - turn 2.8 rad/s: the bazooka shell steers at BAZ_TURN 26
+     (delta-v/s) at 7 m/s, ~3.7 rad/s of angular agility; a
+     13 m/s body turning a touch slower can still run down a
+     strafing target yet can be shaken off by a hard juke.
+   - maxDist 10: the thrust track's 8.0m, +2 for the homing
+     detour a curving chase may need.
+   - dmg 10: the task's measure — one solid hit, combo opener.
+   - armorBreak 30: the game's one armour line, verbatim
+     (damageDummy's breaksArmor, the boss / heavy rule).
+   - boost 15: exactly one step (spendBoost(15) in tryStep).
+   - hold 0.5: the 烈火掌 pin's own duration — the contact
+     hit plants the target (charHoldUntil) for exactly as
+     long as the game's one existing pin. ---- */
+var TESSAN_DATA = {
+  minDist: 3.2, speed: 13, turn: 2.8, maxDist: 10,
+  dmg: 10, hitR: 1.0, armorBreak: 30, boost: 15, hold: 0.5
+};
+var tessanTravel = null;   /* { seqRef, dirYaw, traveled, done, trailT, ringT } — keyed by motion.seq, NEVER motion.start (v67) */
+function tessanArmorActive(){
+  return !!(motion && !motionFading && motion.tessan && tessanTravel &&
+            tessanTravel.seqRef === motion.seq && !tessanTravel.done);
+}
+function tessanSandBurst(n, spread){
+  if (!model) return;
+  for (var i = 0; i < n; i++){
+    var a = Math.random() * Math.PI * 2, r = Math.random() * (spread || 0.5);
+    spawnPart(_pv.set(model.position.x + Math.cos(a) * r, 0.16, model.position.z + Math.sin(a) * r),
+              _pv2.set(Math.cos(a) * (0.7 + Math.random() * 1.1), 0.9 + Math.random() * 1.1, Math.sin(a) * (0.7 + Math.random() * 1.1)),
+              0.5 + Math.random() * 0.2, 0.42, 0xd8c49a, 0.55, 0.4, 1.5, false);
+  }
+}
+function tessankoStartFx(){
+  if (!model) return;
+  /* the launch: her back foot tears a fan of sand out of the
+     beach and the pressure front rolls ahead of her */
+  tessanSandBurst(9, 0.55);
+  spawnGroundRing(new THREE.Vector3(model.position.x, 0.06, model.position.z), 2.3, 0xdff4ff);
+  noteCharFx('tessanko-start', 'thrust');
+}
+function tessanTravelHit(d){
+  var ts = tessanTravel;
+  if (ts) ts.done = true;
+  motion.tessanDone = true;
+  motion.tessanDoneEl = lastT - motion.start;
+  motion.tessanHit = true;
+  motion.tessanHitT = lastT;
+  damageDummy(d, TESSAN_DATA.dmg, 0, false, 'tessanko');
+  /* the shoulder PLANTS the target instead of shoving it:
+     the same pin the master's 烈火掌 applies (charHoldUntil
+     + knockback zeroed; updateDummies holds it). This is
+     the spec's brief stun, and it is what makes the charge
+     a real combo opener — a target still sliding from the
+     tackle's own knockback outruns the combo's step-in
+     chain mid-route (measured in the v100 harness). */
+  d.charHoldUntil = lastT + TESSAN_DATA.hold;
+  d.kx = 0; d.kz = 0;
+  /* the landing is a wall hitting: big flat impact, a wide
+     shockwave ring rolling out, the pressure ring fired down
+     her line, sand everywhere, and a hitstop with weight —
+     all inside the game's existing FX vocabulary, at the
+     loud end of it */
+  facingVec(_pv);
+  var hp = new THREE.Vector3(model.position.x + _pv.x * 0.9, 1.0, model.position.z + _pv.z * 0.9);
+  spawnImpact(hp, 1.6, 0xdff4ff);
+  spawnGroundRing(new THREE.Vector3(model.position.x, 0.06, model.position.z), 3.6, 0xdff4ff);
+  spawnTravelRing(palmPoint(0.3), palmPoint(2.9), true);
+  tessanSandBurst(12, 0.8);
+  addShake(0.34);
+  triggerHitStop(0.06);
+  playHitSfx(true);
+  noteCharFx('tessanko-hit', 'thrust');
+}
+function tessanTravelFinish(){
+  var ts = tessanTravel;
+  if (ts) ts.done = true;
+  if (motion){ motion.tessanDone = true; motion.tessanDoneEl = lastT - motion.start; }
+  /* whiffed: she skids to a stop, sand scattering off the
+     planted feet, the pressure front collapsing into the sand */
+  tessanSandBurst(8, 0.6);
+  spawnGroundRing(new THREE.Vector3(model.position.x, 0.06, model.position.z), 1.7, 0xdff4ff);
+  noteCharFx('tessanko-stop', 'thrust');
+}
+function updateTessanTravel(dt){
+  if (!tessanTravel || tessanTravel.seqRef !== motion.seq){
+    tessanTravel = { seqRef: motion.seq, dirYaw: charYaw, traveled: 0, done: false, trailT: 0, ringT: 0 };
+  }
+  var ts = tessanTravel;
+  if (ts.done) return;
+  /* steer toward the lock target under the turn cap; a dead
+     or lost target leaves her charging straight (committed) */
+  if (lockTarget && lockAlive(lockTarget)){
+    var want = Math.atan2(lockTarget.x - model.position.x, lockTarget.z - model.position.z);
+    var dy = wrapPi(want - ts.dirYaw);
+    var maxTurn = TESSAN_DATA.turn * dt;
+    ts.dirYaw += Math.max(-maxTurn, Math.min(maxTurn, dy));
+  }
+  var step = Math.min(TESSAN_DATA.speed * dt, TESSAN_DATA.maxDist - ts.traveled);
+  if (step <= 0){ tessanTravelFinish(); return; }
+  model.position.x += Math.sin(ts.dirYaw) * step;
+  model.position.z += Math.cos(ts.dirYaw) * step;
+  var rrT = Math.hypot(model.position.x, model.position.z);
+  if (rrT > FIELD_R){ model.position.x *= FIELD_R / rrT; model.position.z *= FIELD_R / rrT; }
+  ts.traveled += step;
+  charYaw = ts.dirYaw;
+  model.rotation.y = charYaw;
+  /* the run leaves a wake: pressure streaming off her front,
+     sand kicked up behind, a small ring snapping off her
+     heels every few metres */
+  ts.trailT -= dt;
+  if (ts.trailT <= 0){
+    ts.trailT = 0.04;
+    spawnPart(_pv.set(model.position.x + Math.sin(ts.dirYaw) * 0.45, 0.75, model.position.z + Math.cos(ts.dirYaw) * 0.45),
+              _pv2.set(Math.sin(ts.dirYaw) * 1.4, 0.25, Math.cos(ts.dirYaw) * 1.4), 0.3, 0.55, 0xdff4ff, 0.5, -0.4, 1.7, true);
+    spawnPart(_pv.set(model.position.x - Math.sin(ts.dirYaw) * 0.35, 0.18, model.position.z - Math.cos(ts.dirYaw) * 0.35),
+              _pv2.set(-Math.sin(ts.dirYaw) * (0.8 + Math.random()), 0.8 + Math.random() * 0.7, -Math.cos(ts.dirYaw) * (0.8 + Math.random())),
+              0.45, 0.4, 0xd8c49a, 0.55, 0.4, 1.5, false);
+  }
+  ts.ringT -= dt;
+  if (ts.ringT <= 0){
+    ts.ringT = 0.13;
+    spawnGroundRing(_pv.set(model.position.x, 0.06, model.position.z), 1.15, 0xdff4ff);
+  }
+  /* contact: the first living body she reaches takes the
+     shoulder — this replaces the thrust's timed mark */
+  for (var ti = 0; ti < dummies.length; ti++){
+    var td = dummies[ti];
+    if (!td.alive || td.down) continue;
+    if (Math.hypot(td.x - model.position.x, td.z - model.position.z) <= TESSAN_DATA.hitR + td.r){
+      tessanTravelHit(td);
+      return;
+    }
+  }
+  if (ts.traveled >= TESSAN_DATA.maxDist) tessanTravelFinish();
+}
 var CHAR_MELEE_SLOTS = { combo: 1, thrust: 1, spin: 1, hammer: 1, upper: 1, airslash: 1 };
 var _charMeleeSpecScaled = {};
 function charMeleeSpec(name){
@@ -10178,6 +10631,7 @@ function charShotSpec(name){
   return (o && o[name]) || SHOT_SPECS[name] || null;
 }
 function charSwingTimes(name){
+  if (name === 'thrust' && motion && motion.tessan) return null;   /* v100: the charge's FX fire from its own events (launch / trail / contact / stop), not the scheduler */
   if (isKusho()){
     if (name === 'combo') return KUSHO_COMBO_TIMES;
     if (name === 'spin') return [0.45, 0.85];
@@ -10382,7 +10836,8 @@ function spawnCloneRush(){
   }
   var tgt = (lockTarget && lockAlive(lockTarget)) ? lockTarget : null;
   projectiles.push({ kind: 'cloneRush', mesh: g, target: tgt, t: 0, life: 2.2, dmg: 20,
-    dir: new THREE.Vector3(Math.sin(charYaw), 0, Math.cos(charYaw)) });
+    dir: new THREE.Vector3(Math.sin(charYaw), 0, Math.cos(charYaw)),
+    vel: new THREE.Vector3(Math.sin(charYaw) * 16, 0, Math.cos(charYaw) * 16), traveled: 0 });
   noteCharFx('clone-rush', 'mine');
 }
 var fistGeo96 = new THREE.SphereGeometry(0.21, 12, 10);
@@ -10517,6 +10972,48 @@ function applyCharMotionPose(name, el, w){
     var imp = gauss(el, 0.5, 0.14);
     if (kusho){
       var far = !!(lockTarget && lockAlive(lockTarget) && distToDummy(lockTarget) > 3.2);
+      if (motion && motion.tessan){
+        /* v100 鉄山靠: the whole body is the projectile — a
+           sprinter's drive with the right shoulder dropped low
+           and leading, the spine pitched hard over the front
+           foot, legs churning under her; the moment the travel
+           ends (contact or whiff) she plants both feet wide
+           and hauls herself upright out of the lean. Written
+           deliberately large: this move has to read from
+           across the arena. */
+        var tDone = !!motion.tessanDone;
+        var dEl = tDone ? Math.max(0, el - (motion.tessanDoneEl || el)) : 0;
+        var leanT = tDone ? Math.max(6, 34 - dEl * 95) : Math.min(34, 10 + el * 150);
+        cpTorso(leanT, -18, w);
+        cpHipsZ(0.30 - (tDone ? Math.min(0.18, dEl * 0.5) : 0), w);
+        cpHipsY(-0.10 + (tDone ? 0 : 0.035 * Math.sin(el * 30)), w);
+        if (!tDone){
+          var phT = Math.sin(el * 17);
+          var pA = Math.max(0, phT), pB = Math.max(0, -phT);
+          blendBoneOffset('leftUpperLeg', -72 * pA - 8, 0, 0, w);
+          blendBoneOffset('leftLowerLeg', 16 + 46 * pA, 0, 0, w);
+          blendBoneOffset('leftFoot', 30 * pA, 0, 0, w);
+          blendBoneOffset('rightUpperLeg', -72 * pB - 8, 0, 0, w);
+          blendBoneOffset('rightLowerLeg', 16 + 46 * pB, 0, 0, w);
+          blendBoneOffset('rightFoot', 30 * pB, 0, 0, w);
+          /* the right arm folds hard across the chest so the
+             SHOULDER is the striking surface; the left arm
+             trails behind as a counterweight */
+          cpArm('right', -58, 6, 96, w);
+          cpArm('left', -24 - 20 * pA, -10, -26, w);
+        } else {
+          /* planted brace: wide staggered feet, knees bent deep */
+          blendBoneOffset('leftUpperLeg', -34, 0, -6, w);
+          blendBoneOffset('leftLowerLeg', 30, 0, 0, w);
+          blendBoneOffset('leftFoot', 6, 0, 0, w);
+          blendBoneOffset('rightUpperLeg', 16, 0, 8, w);
+          blendBoneOffset('rightLowerLeg', 24, 0, 0, w);
+          blendBoneOffset('rightFoot', -8, 0, 0, w);
+          cpArm('right', -58 + Math.min(30, dEl * 80), 6, 96 - Math.min(50, dEl * 130), w);
+          cpArm('left', -40, -10, -20, w);
+        }
+        return true;
+      }
       if (far){
         /* 飛び膝: the approach tool when the target is far */
         blendBoneOffset('rightUpperLeg', -98 * imp, 0, 0, w);
@@ -10790,7 +11287,8 @@ function applyCharMotionPose(name, el, w){
    off the sand. The disciple instead keeps a grounded guard
    stance with a small bounce. Applied after applyMotion so it
    layers over the shared idle pose only while no one-shot owns
-   her; buri never enters. */
+   her. v101: buri enters too — a fighting-game ready stance
+   instead of the plain 棒立ち she used to default to. */
 function applyCharIdleOverlay(t){
   if (!model || !bones.hips) return;
   if (motion && !motionFading && !LOCO[motion.name]) return;
@@ -10806,6 +11304,20 @@ function applyCharIdleOverlay(t){
     cpArm('left', -52, -18, 62, 0.55);
     cpArm('right', -48, 22, 66, 0.55);
     if (bones.hips) bones.hips.obj.position.y += 0.006 * Math.sin(t * 2.6);
+  } else {
+    /* v101: fighting-game idle for the standard set — knees soft,
+       both arms up in a loose guard (the sword hand low-ready), a
+       small bounce and a slow weight sway. Generic ready stance:
+       no character-specific gimmick, so future standard-set
+       characters inherit a stance that reads as a fighter's. */
+    cpArm('left', -34, -20, 58, 0.5);
+    cpArm('right', -40, 24, 64, 0.5);
+    blendBoneOffset('leftUpperLeg', 4, 0, -3, 0.5);
+    blendBoneOffset('rightUpperLeg', 4, 0, 3, 0.5);
+    blendBoneOffset('leftLowerLeg', 9, 0, 0, 0.5);
+    blendBoneOffset('rightLowerLeg', 9, 0, 0, 0.5);
+    blendBoneOffset('spine', 3, 2 * Math.sin(t * 0.9), 0, 0.35);
+    if (bones.hips) bones.hips.obj.position.y += 0.007 * Math.sin(t * 2.3);
   }
 }
 
@@ -10822,6 +11334,15 @@ function tryAttack(kind, real, derive){
     if (kind === 'spin' && isSuper()){ startMotion('spin'); return; }   /* 電影旋蹴は滞空でも出せる */
     if (kind === 'melee' || kind === 'spin' || kind === 'thrust' || kind === 'bat') startMotion('airslash');
     else if (kind === 'shot') startMotion('airshot');
+    return;
+  }
+  /* v100: a connected 鉄山靠 is a combo OPENER — a real
+     neutral melee press after the shoulder lands cancels what
+     is left of the thrust straight into the combo's first
+     strike. Player input only (real): the pilot keeps its
+     v85/v86 renda route off this same slot. */
+  if (real && kind === 'melee' && motion && !motionFading && motion.tessan && motion.tessanHit){
+    startMotion('combo');
     return;
   }
   /* v85 derivation: a real player's neutral melee inside the
@@ -11288,6 +11809,7 @@ var UI_NAV_SECTION_IDS = {
 function uiNavContext(){
   if (typeof keymapOpen !== 'undefined' && keymapOpen) return 'keymap';
   if (typeof demoIntroOpen !== 'undefined' && demoIntroOpen) return 'intro';
+  if (typeof csConfirmOpen !== 'undefined' && csConfirmOpen) return 'csconfirm';
   if (typeof charSelectOpen !== 'undefined' && charSelectOpen) return 'charselect';
   if (typeof menuPage !== 'undefined' && menuPage) return 'page-' + menuPage;
   if (typeof missionState !== 'undefined' &&
@@ -11329,10 +11851,12 @@ function uiNavBuildList(ctx){
   if (ctx === 'title'){
     var tids = ['playStartBtn', 'storeDemoBtn', 'practiceBtn', 'titleSettingsBtn', 'titleKeymapBtn', 'titleDebugBtn', 'titleVrmBtn'];
     for (var i = 0; i < tids.length; i++) uiNavPush(list, document.getElementById(tids[i]));
+  } else if (ctx === 'csconfirm'){
+    uiNavPush(list, document.getElementById('csConfirmYes'));
+    uiNavPush(list, document.getElementById('csConfirmNo'));
   } else if (ctx === 'charselect'){
     for (var ci = 0; ci < charSelectCardEls.length; ci++) uiNavPush(list, charSelectCardEls[ci]);
-    uiNavPush(list, document.getElementById('charSelectConfirm'));
-    uiNavPush(list, document.getElementById('charSelectBack'));
+    uiNavPush(list, document.getElementById('charSelectToTitle'));
   } else if (ctx === 'result'){
     uiNavPush(list, document.getElementById('retryBtn'));
   } else if (ctx.indexOf('page-') === 0){
@@ -11428,7 +11952,8 @@ function uiNavReadDir(pressed, gp){
 function uiNavPoll(ctx, gp, pressed, edge){
   uiNavEnsure(ctx);
   if (edge(9)){
-    if (ctx === 'charselect'){ ensureSfx(); confirmCharSelect(); }
+    if (ctx === 'charselect'){ ensureSfx(); openCsConfirm(); }
+    else if (ctx === 'csconfirm') uiNavActivate();
     else if (ctx === 'title' && performance.now() >= titleStartSuppressUntil){
       var psb = document.getElementById('playStartBtn');
       if (psb){ ensureSfx(); psb.click(); }
@@ -11437,6 +11962,7 @@ function uiNavPoll(ctx, gp, pressed, edge){
   if (edge(0)) uiNavActivate();
   else if (edge(1)){
     if (ctx === 'keymap'){ ensureSfx(); setKeymapOpen(false); }
+    else if (ctx === 'csconfirm'){ ensureSfx(); closeCsConfirm(); }
     else if (ctx === 'charselect'){ ensureSfx(); closeCharSelect(); }
     else if (ctx.indexOf('page-') === 0){ ensureSfx(); closeMenuPage(); }
     else if (ctx === 'panel'){ ensureSfx(); setPanelOpen(false); }
@@ -11780,7 +12306,10 @@ function updateFreeMove(dt){
      its MELEE_ADVANCE track out as real forward displacement.
      Starting a fresh motion (re)arms the tracker with the stop
      distance to the locked target computed at that moment. ---- */
-  if (motion && !motionFading && MELEE_ADVANCE[motion.name]){
+  if (motion && !motionFading && motion.tessan){
+    updateTessanTravel(dt);
+    meleeTravel = null;
+  } else if (motion && !motionFading && MELEE_ADVANCE[motion.name]){
     if (!meleeTravel || meleeTravel.seqRef !== motion.seq){
       /* v67: keyed by motion.seq, NOT motion.start — hit-stop
          rewrites motion.start every frame (animate:
@@ -13447,6 +13976,7 @@ function animate(){
       }
       if (motion && motionW > 0.001) applyMotion(t);
       applyCharIdleOverlay(t);   /* v96: superhuman crossed-arms hover / fighter stance */
+      if (typeof showcaseTick === 'function') showcaseTick(dt);   /* v101: turntable + random techniques in the showcase space */
 
       /* muzzle flash: during the burst, light the fish's head for a
          few frames at each shot on the BURST_SHOTS schedule */
